@@ -1,6 +1,7 @@
 ﻿using OpenXml.IRepository;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,19 +10,18 @@ namespace OpenXml.Repository
 {
     public class FuntionCustom : IFuntionCustom
     {
-        T IFuntionCustom.DocDuLieuExcel<T>(T input)
+        public T DocDuLieuExcel<T>(string fileURRL)
         {
-            throw new NotImplementedException();
+            T data = default(T);
+            return data;
         }
-
-        void IFuntionCustom.ThayTheBang<T>(T input)
+        public void ThayTheBang<T>(T input)
         {
-            throw new NotImplementedException();
+            
         }
-
-        void IFuntionCustom.ThayTheThamSo<T>(T input)
+        public void ThayTheThamSo<T>(T input)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

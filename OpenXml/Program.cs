@@ -13,7 +13,7 @@ namespace OpenXml
             switch (a)
             {
                 case 1:
-                    Fun.DocDuLieuExcel(1);
+                    Fun.DocDuLieuExcel<dynamic>("");
                     break;
                 case 2:
                     Fun.ThayTheThamSo(1);

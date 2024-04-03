@@ -1,4 +1,5 @@
 ﻿using OpenXml.IRepository;
+using OpenXml.Service;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,16 +13,17 @@ namespace OpenXml.Repository
     {
         public T DocDuLieuExcel<T>(string fileURRL)
         {
+            ServiceDocDuLieuExcel.XuLy();
             T data = default(T);
             return data;
         }
         public void ThayTheBang<T>(T input)
         {
-            
+            ServiceThayTheBang.XuLy();
         }
         public void ThayTheThamSo<T>(T input)
         {
-            
+            ServiceThayTheThamSo.XuLy();    
         }
     }
 }

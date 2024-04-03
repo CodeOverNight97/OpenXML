@@ -8,5 +8,9 @@ namespace OpenXml.Service
 {
     public static class ServiceThayTheBang
     {
+        public static string XuLy()
+        {
+            return "";
+        }
     }
 }

@@ -10,6 +10,6 @@ namespace OpenXml.IRepository
     {
         void ThayTheThamSo<T>(T input);
         void ThayTheBang<T>(T input);
-        T DocDuLieuExcel<T>(string fileURRL);
+        List<T> DocDuLieuExcel<T>(string fileURRL);
     }
 }

@@ -8,7 +8,7 @@ namespace OpenXml.Service
 {
     public static class ServiceDocDuLieuExcel
     {
-        public static string XuLy()
+        public static string XuLy(string fileURL)
         {
             return "";
         }

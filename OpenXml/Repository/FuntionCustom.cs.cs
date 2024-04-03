@@ -11,10 +11,10 @@ namespace OpenXml.Repository
 {
     public class FuntionCustom : IFuntionCustom
     {
-        public T DocDuLieuExcel<T>(string fileURRL)
+        public List<T> DocDuLieuExcel<T>(string fileURRL)
         {
-            ServiceDocDuLieuExcel.XuLy();
-            T data = default(T);
+            ServiceDocDuLieuExcel.XuLy(fileURRL);
+            List<T> data = default(List<T>);
             return data;
         }
         public void ThayTheBang<T>(T input)

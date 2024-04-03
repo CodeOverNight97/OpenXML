@@ -1,3 +1,6 @@
 .vs/
 OpenXml/bin/
 OpenXml/obj/
+OpenXml/Program.cs
+OpenXml/File/
+OpenXml/Model/

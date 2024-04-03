@@ -1,4 +1,5 @@
 ﻿using OpenXml.IRepository;
+using OpenXml.Model;
 using OpenXml.Service;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace OpenXml.Repository
     {
         public List<T> DocDuLieuExcel<T>(string fileURRL)
         {
-            ServiceDocDuLieuExcel.XuLy(fileURRL);
+            ServiceDocDuLieuExcel.XuLy<TestDocDuLieuExcelmodel>(fileURRL);
             List<T> data = default(List<T>);
             return data;
         }

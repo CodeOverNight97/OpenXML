@@ -8,9 +8,9 @@ namespace OpenXml.Service
 {
     public static class ServiceDocDuLieuExcel
     {
-        public static string XuLy(string fileURL)
+        public static List<T> XuLy<T>(string fileURL)
         {
-            return "";
+            return new List<T>();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenXml.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,6 @@ namespace OpenXml.IRepository
     {
         void ThayTheThamSo<T>(T input);
         void ThayTheBang<T>(T input);
-        List<T> DocDuLieuExcel<T>(string fileURRL);
+        DocDuLieuExcel<T> DocDuLieuExcel<T>(string fileURRL);
     }
 }

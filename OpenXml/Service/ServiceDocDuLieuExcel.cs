@@ -1,25 +1,22 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenXml.Model;
 
 namespace OpenXml.Service
 {
     public static class ServiceDocDuLieuExcel
     {
-        public static List<T> XuLy<T>(string fileURL)
+        public static DocDuLieuExcel<T> XuLy<T>(string fileURL)
         {
             if (!File.Exists(fileURL))
             {
                 throw new Exception("Không tìm thấy file");
             }
             List<T> dataList = new List<T>();
+            List<DataError> errors = new List<DataError>();
+            var res = new DocDuLieuExcel<T>();
 
-            using (SpreadsheetDocument document = SpreadsheetDocument.Open(fileURL, false))
+            using (SpreadsheetDocument document = SpreadsheetDocument.Open(fileURL, true))
             {
                 WorkbookPart workbookPart = document.WorkbookPart;
                 WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
@@ -29,7 +26,7 @@ namespace OpenXml.Service
                 // Lấy danh sách các cột trong file Excel (từ hàng 1)
                 Row headerRow = worksheet.GetFirstChild<SheetData>().Elements<Row>().FirstOrDefault();
                 List<string> headers = new List<string>();
-                foreach (Cell cell in headerRow.Elements<Cell>())
+                foreach (Cell cell in headerRow.Elements<Cell>().Skip(1))
                 {
                     string header = GetCellValue(cell, sharedStringTable);
                     headers.Add(header);
@@ -42,8 +39,10 @@ namespace OpenXml.Service
 
                     for (int i = 0; i < headers.Count; i++)
                     {
-                        Cell cell = row.Elements<Cell>().ElementAt(i);
+                        Cell cell = row.Elements<Cell>().ElementAtOrDefault(i + 1); //bỏ qua cột đầu
                         string value = GetCellValue(cell, sharedStringTable);
+                        var colNum = i + 2;
+                        var rowNum = int.Parse(row.RowIndex);
 
                         // Gán giá trị cho thuộc tính tương ứng của đối tượng
                         var property = typeof(T).GetProperty(headers[i]);
@@ -53,30 +52,135 @@ namespace OpenXml.Service
                             {
                                 property.SetValue(obj, value);
                             }
-                            else if (property.PropertyType == typeof(int))
+                            else if (property.PropertyType == typeof(DateTime))
                             {
-                                int intValue;
-                                if (int.TryParse(value, out intValue))
+                                DateTime intValue;
+                                if (DateTime.TryParse(value, out intValue))
+                                {
+                                    property.SetValue(obj, intValue);
+                                    if (string.IsNullOrEmpty(value))
+                                    {
+                                        errors.Add(new DataError()
+                                        {
+                                            col = colNum,
+                                            row = rowNum,
+                                            isNullOrEmpty = true,
+                                            isWrongType = false
+                                        });
+                                    }
+                                }
+                                else if (!DateTime.TryParse(value, out intValue) && string.IsNullOrEmpty(value))
+                                {
+                                    errors.Add(new DataError()
+                                    {
+                                        col = colNum,
+                                        row = rowNum,
+                                        isNullOrEmpty = true,
+                                        isWrongType = false
+                                    });
+                                }
+                                else if (!DateTime.TryParse(value, out intValue) && !string.IsNullOrEmpty(value))
+                                {
+                                    errors.Add(new DataError()
+                                    {
+                                        col = colNum,
+                                        row = rowNum,
+                                        isNullOrEmpty = false,
+                                        isWrongType = true
+                                    });
+                                }
+                            }
+                            else if (property.PropertyType == typeof(double))
+                            {
+                                double intValue;
+                                if (double.TryParse(value, out intValue))
                                 {
                                     property.SetValue(obj, intValue);
                                 }
+                                else if (!double.TryParse(value, out intValue) && string.IsNullOrEmpty(value))
+                                {
+                                    errors.Add(new DataError()
+                                    {
+                                        col = colNum,
+                                        row = rowNum,
+                                        isNullOrEmpty = true,
+                                        isWrongType = false
+                                    });
+                                }
+                                else if (!double.TryParse(value, out intValue) && !string.IsNullOrEmpty(value))
+                                {
+                                    errors.Add(new DataError()
+                                    {
+                                        col = colNum,
+                                        row = rowNum,
+                                        isNullOrEmpty = false,
+                                        isWrongType = true
+                                    });
+                                }
                             }
-                            // Xử lý các kiểu dữ liệu thuộc tính khác của đối tượng
-
+                            else if (property.PropertyType == typeof(bool))
+                            {
+                                Decimal intValue;
+                                if (Decimal.TryParse(value, out intValue))
+                                {
+                                    if (intValue == 1)
+                                        property.SetValue(obj, true);
+                                    else if (intValue == 0)
+                                        property.SetValue(obj, false);
+                                    else
+                                    {
+                                        errors.Add(new DataError()
+                                        {
+                                            col = rowNum,
+                                            row = rowNum,
+                                            isNullOrEmpty = false,
+                                            isWrongType = true
+                                        });
+                                    }
+                                }
+                                else if (!Decimal.TryParse(value, out intValue) && string.IsNullOrEmpty(value))
+                                {
+                                    errors.Add(new DataError()
+                                    {
+                                        col = rowNum,
+                                        row = rowNum,
+                                        isNullOrEmpty = true,
+                                        isWrongType = false
+                                    });
+                                }
+                                else if (!Decimal.TryParse(value, out intValue) && !string.IsNullOrEmpty(value))
+                                {
+                                    errors.Add(new DataError()
+                                    {
+                                        col = rowNum,
+                                        row = rowNum,
+                                        isNullOrEmpty = false,
+                                        isWrongType = true
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("Kiểu dữ liệu của model chỉ có thể là Double, String , Boolean hoặc Datetime");
+                            }
                         }
                     }
 
                     dataList.Add(obj);
                 }
             }
-            JsonConvert.SerializeObject(dataList);
-            return dataList;
+            res.Data = dataList;
+            res.dataError = errors;
+            return res;
         }
         private static string GetCellValue(Cell cell, SharedStringTable sharedStringTable)
         {
             string value = string.Empty;
-
-            if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
+            if (cell == null)
+            {
+                value = null;
+            }
+            else if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
             {
                 int index = int.Parse(cell.InnerText);
                 value = sharedStringTable.ElementAt(index).InnerText;
@@ -88,5 +192,10 @@ namespace OpenXml.Service
 
             return value;
         }
+    }
+
+    public class SharedStringTable : DocumentFormat.OpenXml.Spreadsheet.SharedStringTable { }
+    {
+
     }
 }

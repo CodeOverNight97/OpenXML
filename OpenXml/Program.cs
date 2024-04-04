@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OpenXml.IRepository;
+using OpenXml.Model;
 using OpenXml.Repository;
 
 namespace OpenXml
@@ -8,9 +9,10 @@ namespace OpenXml
     {
         public static void Main(String[] args)
         {
-            var a  = int.Parse(Console.ReadLine());
+            //var a  = int.Parse(Console.ReadLine());
             IFuntionCustom Fun = new FuntionCustom();
-            Fun.DocDuLieuExcel<dynamic>("C:/LamViec/OpenXml/OpenXml/File/test.xlsx");
+            var a = Fun.DocDuLieuExcel<TestDocDuLieuExcelmodel>("C:/LamViec/OpenXml/OpenXml/File/2.xlsx");
+            Console.WriteLine(a);
         }
     }
 }

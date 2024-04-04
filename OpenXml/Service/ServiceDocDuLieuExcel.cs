@@ -193,9 +193,4 @@ namespace OpenXml.Service
             return value;
         }
     }
-
-    public class SharedStringTable : DocumentFormat.OpenXml.Spreadsheet.SharedStringTable { }
-    {
-
-    }
 }
